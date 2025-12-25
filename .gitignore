@@ -1,0 +1,9 @@
+backend/.env
+backend/data.db
+.idea
+frontend/
+__pycache__/
+*.py[cod]
+**/__pycache__/
+
+.venv

@@ -1,0 +1,8 @@
+fastapi[standard]
+python-jose
+passlib==1.7.4
+bcrypt==3.2.2
+cffi==1.15.1
+pycparser==2.21
+uvicorn
+python-dotenv
