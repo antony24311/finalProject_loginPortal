@@ -18,11 +18,16 @@ def register(data: RegisterSchema, db=Depends(get_db)):
 
 @router.post("/login", response_model=TokenSchema)
 def login(data: LoginSchema, db=Depends(get_db)):
+    if security.check_login(data.username):
+        raise HTTPException(status_code=403, detail="帳號暫時鎖定，請稍後再試")
     user = auth_service.authenticate_user(data.username, data.password, db)
     if not user:
-        raise HTTPException(status_code=401, detail="帳號或密碼不存在")
+        security.fail_login(data.username)
+        raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
+    security.success_login(data.username)
     token = auth_service.create_token_for_user(user)
     return {"access_token": token}
+
 
 @router.post("/refresh")
 def refresh_token(payload: dict):
