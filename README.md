@@ -39,7 +39,7 @@ https://nodejs.org
 ```bash
 node --version
 npm --version
-
+```
 
 ## 2. 建制相關環境
 ```
