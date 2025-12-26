@@ -26,3 +26,8 @@ if not settings.SECRET_KEY:
 #     settings = Config()
 # else:
 #     print(".env file not found. Please create one in the 'backend/' directory.")
+    
+# if os.path.exists("../../.env") or os.path.exists("backend/.env"):
+#     settings = Config()
+# else:
+#     print(".env file not found. Please create one in the 'backend/' directory.")
