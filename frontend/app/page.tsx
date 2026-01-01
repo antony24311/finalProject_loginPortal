@@ -40,7 +40,7 @@ export default function AuthPage() {
         setError("帳號或密碼錯誤")
         return
       }
-
+      localStorage.setItem("access_token", data.access_token);
       if (mode === "login") {
         window.location.href = "/dashboard"
       } else {
