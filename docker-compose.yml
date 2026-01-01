@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    container_name: loginportal-backend
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build: ./frontend
+    container_name: loginportal-frontend
+    ports:
+      - "5600:3000"
+    env_file:
+      - ./frontend/.env.local
+    depends_on:
+      - backend
