@@ -94,3 +94,28 @@ def get_current_user(
         "id": user["id"],
         "username": user["username"],
     }
+
+MAX_ATTEMPTS = 5
+LOCK_TIME = timedelta(minutes=5)
+login_attempts = {}
+
+
+def check_login(username: str):
+    record = login_attempts.get(username)
+    if record:
+        count, locked_until = record
+        return locked_until and datetime.now(timezone.utc) < locked_until
+    return False
+
+
+def fail_login(username: str):
+    count, locked_until = login_attempts.get(username, (0, None))
+    count += 1
+    if count >= MAX_ATTEMPTS:
+        locked_until = datetime.now(timezone.utc) + LOCK_TIME
+    login_attempts[username] = (count, locked_until)
+
+
+def success_login(username: str):
+    login_attempts.pop(username, None)
+
