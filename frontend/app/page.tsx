@@ -15,6 +15,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const usernameRegex = /^[a-zA-Z0-9_]+$/
 
   // 在 handleSubmit 內修改
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,6 +24,12 @@ export default function AuthPage() {
     if (loading) return // 防止連點
     setLoading(true)
     setError(null)
+
+    if (!usernameRegex.test(username)) {
+      setError("帳號僅能包含英文字母、數字與底線")
+      setLoading(false)
+      return
+    }
 
     const apiEndpoint = mode === "login" ? "/api/login" : "/api/register"
 
@@ -36,11 +43,16 @@ export default function AuthPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        // 錯誤訊息最小化（防帳號枚舉）
-        setError("帳號或密碼錯誤")
+        const errorMap: Record<number, string> = {
+          400: "輸入資料格式不正確",
+          401: "帳號或密碼錯誤",
+          403: "帳號暫時鎖定，請稍後再試",
+        }
+        setError(errorMap[response.status] ?? "系統暫時無法使用")
         return
       }
-      localStorage.setItem("access_token", data.access_token);
+
+      localStorage.setItem("access_token", data.access_token)
       if (mode === "login") {
         window.location.href = "/dashboard"
       } else {
@@ -189,8 +201,14 @@ export default function AuthPage() {
               )}
             </div>
           </form>
+          {error && (
+            <div className="text-sm text-red-500 text-center">
+              {error}
+            </div>
+          )}
         </CardContent>
       </Card>
+
     </div>
   )
 }
