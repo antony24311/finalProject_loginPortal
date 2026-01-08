@@ -6,9 +6,16 @@
 ```
 pip install -r requirements.txt
 ```
+## 安裝 Node.js
+請先安裝 Node.js（LTS 版本）
+https://nodejs.org
 
+安裝完成後，開啟 Terminal（或命令提示字元）檢查：
+
+node --version
+npm --version
 ## environment variables
-
+.env from backend:
 ```
 SECRET_KEY=
 ALGORITHM=
@@ -21,37 +28,20 @@ DATABASE=
 HOST=127.0.0.1
 PORT=8000
 ```
-
-# Frontend Setup Guide (npm)
-
-本文件說明如何在 **全新環境（未安裝任何前端工具）** 下，  
-建置並啟動本專案的前端（Next.js + npm）。
-
----
-
-## 1. 安裝 Node.js
-
-請先安裝 **Node.js（LTS 版本）**  
-https://nodejs.org
-
-安裝完成後，開啟 Terminal（或命令提示字元）檢查：
-
-```bash
-node --version
-npm --version
+.env.local from frontend:
 ```
-
-## 2. 建制相關環境
+BACKEND_URL=http://backend:4000
+NODE_ENV=development   
 ```
-cd frontend
-npm install
+## start
 ```
-
-## 3. 啟動前端
+docker compose up -d --build
 ```
-npm run dev
+mac:
 ```
-瀏覽器開啟
+open http://localhost:5600
 ```
-http://localhost:3000
+windows:
+```
+start http://localhost:5600
 ```
