@@ -16,28 +16,19 @@ const securityHeaders = [
       ${scriptSrc}
       style-src 'self' 'unsafe-inline';
       img-src 'self' data:;
-      connect-src 'self' http://127.0.0.1:8000 ws:;
+      connect-src 'self' http://127.0.0.1:8000 http://localhost:4000 ws:;
       frame-ancestors 'none';
       base-uri 'self';
       form-action 'self';
     `.replace(/\s{2,}/g, " ").trim(),
   },
-  {
-    key: "X-Frame-Options",
-    value: "DENY",
-  },
-  {
-    key: "X-Content-Type-Options",
-    value: "nosniff",
-  },
-  {
-    key: "Referrer-Policy",
-    value: "no-referrer",
-  },
-  {
-    key: "Permissions-Policy",
-    value: "geolocation=(), microphone=(), camera=()",
-  },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-XSS-Protection", value: "1; mode=block" },
+  { key: "Referrer-Policy", value: "no-referrer" },
+  { key: "Permissions-Policy", value: "geolocation=(), microphone=(), camera=()" },
+  { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+  { key: "X-Powered-By", value: "" },
 ];
 
 const nextConfig = {

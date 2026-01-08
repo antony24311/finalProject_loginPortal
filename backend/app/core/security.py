@@ -28,27 +28,39 @@ def verify_password(plain: str, hashed: str) -> bool:
 def create_access_token(data: dict, expires_delta: int = ACCESS_EXPIRE_MINUTES):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=expires_delta)
-    to_encode.update({"exp": expire})
-    # print("SECRET_KEY =", settings.SECRET_KEY)
-    # print("TYPE =", type(settings.SECRET_KEY))
-    # print("SECRET_KEY =", SECRET_KEY)
-    # print("TYPE =", type(SECRET_KEY))
+    # Add security claims
+    to_encode.update({
+        "exp": expire,
+        "aud": "finalProject",
+        "iss": "finalProject-backend",
+    })
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def create_refresh_token(data: dict, expires_delta: int = REFRESH_EXPIRE_DAYS):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(days=expires_delta)
-    to_encode.update({"exp": expire})
+    to_encode.update({
+        "exp": expire,
+        "aud": "finalProject",
+        "iss": "finalProject-backend",
+        "type": "refresh",
+    })
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def decode_access_token(token: str):
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], audience="finalProject")
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 
 def decode_refresh_token(token: str):
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], audience="finalProject")
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token")
 
 def get_current_user(
     token: str = Depends(oauth2_scheme),
