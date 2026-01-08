@@ -12,17 +12,25 @@ limiter = Limiter(key_func=get_remote_address)
 
 @router.post("/register")
 @limiter.limit("5/minute")
-async def register(request: Request, data: RegisterSchema, db=Depends(get_db)):
+def register(request: Request, data: RegisterSchema, db=Depends(get_db)):
     success = auth_service.register_user(data.username, data.password, db)
     if not success:
         # Generic error message - avoid username enumeration
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Registration failed")
-    return {"message": "Registration successful"}
+    return {
+        "message": "Registration successful",
+        "password_requirements": {
+            "min_length": 8,
+            "requires_uppercase": True,
+            "requires_lowercase": True,
+            "requires_digits": True
+        }
+    }
 
 
 @router.post("/login", response_model=TokenSchema)
 @limiter.limit("5/minute")
-async def login(request: Request, data: LoginSchema, db=Depends(get_db)):
+def login(request: Request, data: LoginSchema, db=Depends(get_db)):
     if security.check_login(data.username):
         raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Too many attempts")
     user = auth_service.authenticate_user(data.username, data.password, db)
@@ -35,7 +43,7 @@ async def login(request: Request, data: LoginSchema, db=Depends(get_db)):
 
 
 @router.post("/refresh")
-async def refresh_token(payload: dict):
+def refresh_token(payload: dict):
     token = payload.get("refresh_token")
     if not token:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Refresh token required")

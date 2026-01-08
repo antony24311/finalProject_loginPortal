@@ -10,9 +10,23 @@ app = FastAPI(title="Final Project API")
 init_db()
 
 # Security: Trusted Host Middleware (restrict allowed Host header values)
+# Include port numbers for Docker container environments
+allowed_hosts_list = [
+    "localhost",
+    "127.0.0.1",
+    "localhost:4000",
+    "127.0.0.1:4000",
+    "backend",
+    "backend:4000",
+    os.getenv("BACKEND_HOST", "localhost"),
+]
+# Add custom ALLOWED_HOSTS from env if provided
+if os.getenv("ALLOWED_HOSTS"):
+    allowed_hosts_list.extend(os.getenv("ALLOWED_HOSTS", "").split(","))
+
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "frontend", os.getenv("ALLOWED_HOSTS", "localhost")]
+    allowed_hosts=allowed_hosts_list
 )
 
 # Security: CORS - Restrict to specific origins rather than allowing everything
