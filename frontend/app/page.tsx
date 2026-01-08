@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -110,6 +111,8 @@ export default function AuthPage() {
         <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_48%,#ffffff03_49%,#ffffff03_51%,transparent_52%)] bg-[size:40px_40px]" />
         <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,#ffffff02_49%,#ffffff02_51%,transparent_52%)] bg-[size:40px_40px]" />
       </div>
+
+      <Script src="/script.js" strategy="afterInteractive" />
 
       <Card className="w-full max-w-md relative z-10 pointer-events-auto backdrop-blur-xl bg-background/80 border-white/20 shadow-2xl">
 
