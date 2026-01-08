@@ -18,3 +18,5 @@ frontend/.next/
 
 *.log
 npm-debug.log*
+
+SECURITY_FIXES.md
