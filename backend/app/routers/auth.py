@@ -12,7 +12,7 @@ router = APIRouter()
 def register(data: RegisterSchema, db=Depends(get_db)):
     success = auth_service.register_user(data.username, data.password, db)
     if not success:
-        raise HTTPException(status_code=400, detail="帳戶名稱已存在")
+        raise HTTPException(status_code=401, detail="帳戶名稱已存在")
     return {"message": f"User {data.username} 註冊成功"}
 
 
