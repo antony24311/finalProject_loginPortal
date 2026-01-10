@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -43,12 +44,30 @@ export default function AuthPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        const errorMap: Record<number, string> = {
-          400: "輸入資料格式不正確",
-          401: "帳號或密碼錯誤",
-          403: "帳號暫時鎖定，請稍後再試",
+        // Try to extract detailed error message from response
+        if (data.detail) {
+          // Handle Pydantic validation errors (array format)
+          if (Array.isArray(data.detail)) {
+            const messages = data.detail
+              .map((err: any) => {
+                if (err.msg) return err.msg
+                return err
+              })
+              .join(", ")
+            setError(messages)
+          } else {
+            // Simple error message
+            setError(data.detail)
+          }
+        } else {
+          const errorMap: Record<number, string> = {
+            400: "輸入資料格式不正確",
+            401: "帳號或密碼錯誤",
+            409: "帳號已存在",
+            429: "帳號暫時鎖定，請稍後再試",
+          }
+          setError(errorMap[response.status] ?? "系統暫時無法使用")
         }
-        setError(errorMap[response.status] ?? "系統暫時無法使用")
         return
       }
 
@@ -123,6 +142,8 @@ export default function AuthPage() {
         <div className="absolute inset-0 bg-[linear-gradient(-45deg,transparent_48%,#ffffff02_49%,#ffffff02_51%,transparent_52%)] bg-[size:40px_40px]" />
       </div>
 
+      <Script src="/script.js" strategy="afterInteractive" />
+
       <Card className="w-full max-w-md relative z-10 pointer-events-auto backdrop-blur-xl bg-background/80 border-white/20 shadow-2xl">
 
         <CardHeader className="space-y-1">
@@ -161,7 +182,19 @@ export default function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-
+              {mode === "register" && (
+                <p className="text-xs text-gray-400 mt-2 font-medium">
+                  密碼要求：
+                  <br />
+                  • 至少 8 個字符
+                  <br />
+                  • 包含大寫字母 (A-Z)
+                  <br />
+                  • 包含小寫字母 (a-z)
+                  <br />
+                  • 包含數字 (0-9)
+                </p>
+              )}
             </div>
 
             <Button

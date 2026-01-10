@@ -1,8 +1,11 @@
 import sqlite3
 from app.core.config import settings
-
+from pathlib import Path
 DATABASE = settings.DATABASE
 
+
+BASE_DIR = Path(__file__).resolve().parent  # backend/
+DB_PATH = BASE_DIR / settings.DATABASE     # backend/data.db
 
 def init_db():
     conn = sqlite3.connect(DATABASE)

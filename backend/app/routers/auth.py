@@ -12,14 +12,14 @@ router = APIRouter()
 def register(data: RegisterSchema, db=Depends(get_db)):
     success = auth_service.register_user(data.username, data.password, db)
     if not success:
-        raise HTTPException(status_code=400, detail="帳戶名稱已存在")
+        raise HTTPException(status_code=409, detail="帳戶名稱已存在")
     return {"message": f"User {data.username} 註冊成功"}
 
 
 @router.post("/login", response_model=TokenSchema)
 def login(data: LoginSchema, db=Depends(get_db)):
     if security.check_login(data.username):
-        raise HTTPException(status_code=403, detail="帳號暫時鎖定，請稍後再試")
+        raise HTTPException(status_code=429, detail="帳號暫時鎖定，請稍後再試")
     user = auth_service.authenticate_user(data.username, data.password, db)
     if not user:
         security.fail_login(data.username)
