@@ -55,6 +55,7 @@ def check_login(username: str):
     if record:
         count, locked_until = record
         return locked_until and datetime.now(timezone.utc) < locked_until
+    return False
 
     return False
 
@@ -69,3 +70,7 @@ def fail_login(username: str):
 
 def success_login(username: str):
     login_attempts.pop(username, None)
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/main

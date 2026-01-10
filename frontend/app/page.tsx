@@ -44,6 +44,7 @@ export default function AuthPage() {
       const data = await response.json()
 
       if (!response.ok) {
+<<<<<<< HEAD
         // Try to extract detailed error message from response
         if (data.detail) {
           // Handle Pydantic validation errors (array format)
@@ -68,6 +69,14 @@ export default function AuthPage() {
           }
           setError(errorMap[response.status] ?? "系統暫時無法使用")
         }
+=======
+        const errorMap: Record<number, string> = {
+          400: "輸入資料格式不正確",
+          401: "帳號或密碼錯誤",
+          403: "帳號暫時鎖定，請稍後再試",
+        }
+        setError(errorMap[response.status] ?? "系統暫時無法使用")
+>>>>>>> upstream/main
         return
       }
 
