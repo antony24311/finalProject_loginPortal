@@ -5,7 +5,7 @@
 const allowInline = process.env.ALLOW_INLINE_SCRIPTS === 'true' || process.env.NODE_ENV !== 'production'
 
 const scriptSrc = allowInline
-  ? "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com;"
+  ? "script-src 'self'  'unsafe-inline' https://va.vercel-scripts.com;"
   : "script-src 'self' 'unsafe-eval' https://va.vercel-scripts.com;"
 
 const securityHeaders = [
