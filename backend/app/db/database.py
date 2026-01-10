@@ -5,15 +5,15 @@ from contextlib import contextmanager
 DATABASE_URL = settings.DATABASE
 
 
-@contextmanager
-def get_db_context():
-    """Context manager for database connections"""
-    conn = sqlite3.connect(DATABASE_URL, check_same_thread=False, timeout=5.0)
-    conn.row_factory = sqlite3.Row
-    try:
-        yield conn
-    finally:
-        conn.close()
+# @contextmanager
+# def get_db_context():
+#     """Context manager for database connections"""
+#     conn = sqlite3.connect(DATABASE_URL, check_same_thread=False, timeout=5.0)
+#     conn.row_factory = sqlite3.Row
+#     try:
+#         yield conn
+#     finally:
+#         conn.close()
 
 
 def get_db():
