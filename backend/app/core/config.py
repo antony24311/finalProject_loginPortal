@@ -13,8 +13,8 @@ class Config:
 
     DATABASE = os.getenv("DATABASE", "data.db")
 
-    HOST = os.getenv("HOST", "127.0.0.1")
-    PORT = os.getenv("PORT", "8000")
+    # HOST = os.getenv("HOST", "127.0.0.1")
+    # PORT = os.getenv("PORT", "8000")
 
 
 settings = Config()

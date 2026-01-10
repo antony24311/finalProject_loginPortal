@@ -1,12 +1,7 @@
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
-from jose import jwt, JWTError
-
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-
 from app.core.config import settings
-from app.db.database import get_db
+from jose import jwt
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -15,7 +10,7 @@ REFRESH_EXPIRE_DAYS = settings.REFRESH_TOKEN_EXPIRE_DAYS
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -50,8 +45,6 @@ def decode_access_token(token: str):
 def decode_refresh_token(token: str):
     return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
-<<<<<<< HEAD
-
 MAX_ATTEMPTS = 5
 LOCK_TIME = timedelta(minutes=5)
 login_attempts = {}
@@ -62,6 +55,8 @@ def check_login(username: str):
     if record:
         count, locked_until = record
         return locked_until and datetime.now(timezone.utc) < locked_until
+
+    return False
 
 
 def fail_login(username: str):
@@ -74,49 +69,3 @@ def fail_login(username: str):
 
 def success_login(username: str):
     login_attempts.pop(username, None)
-=======
-def get_current_user(
-    token: str = Depends(oauth2_scheme),
-    db = Depends(get_db)
-):
-    """
-    sqlite3 正式版 current user：
-    - 驗 JWT
-    - 用 raw SQL 查 users table
-    """
-
-    try:
-        payload = decode_access_token(token)
-        username = payload.get("sub")
-
-        if not username:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid token payload",
-            )
-
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-        )
-
-    cursor = db.cursor()
-    cursor.execute(
-        "SELECT id, username FROM users WHERE username = ?",
-        (username,)
-    )
-    user = cursor.fetchone()
-
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found",
-        )
-
-    # 回傳 dict（不要回傳 password）
-    return {
-        "id": user["id"],
-        "username": user["username"],
-    }
->>>>>>> b3d3cd4 (docker 虛擬化，前端機入JWT驗證)
